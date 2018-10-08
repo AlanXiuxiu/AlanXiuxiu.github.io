@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/apple-touch-icon.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Machine Learning,SVM,Kernel Method," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="阅读了王东老师《现代机器学习技术导论》第五章关于核函数和支持向量机的介绍后，我总算是系统地学习了核函数相关的知识，知道这是个什么玩意，不会再谈“核”色变了。此外，在打牢了逻辑回归的知识基础后，学习支持向量机也非常轻松。然而在阅读第五章核函数相关的过程中，我也遇到了很多困难，很多数学方面的概念对我来说非常抽象，于是我也求助了博客、知乎，还结合书本内容看了很多遍吴恩达关于核函数的讲解，在这篇读书笔记中">
+<meta name="keywords" content="Machine Learning,SVM,Kernel Method">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于核方法和支持向量机">
+<meta property="og:url" content="http://AlanXiuxiu.github.io/2018/09/22/Kernel-SVM/index.html">
+<meta property="og:site_name" content="Xiutopia">
+<meta property="og:description" content="阅读了王东老师《现代机器学习技术导论》第五章关于核函数和支持向量机的介绍后，我总算是系统地学习了核函数相关的知识，知道这是个什么玩意，不会再谈“核”色变了。此外，在打牢了逻辑回归的知识基础后，学习支持向量机也非常轻松。然而在阅读第五章核函数相关的过程中，我也遇到了很多困难，很多数学方面的概念对我来说非常抽象，于是我也求助了博客、知乎，还结合书本内容看了很多遍吴恩达关于核函数的讲解，在这篇读书笔记中">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-1.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-2.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-3.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-4.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-5.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-6.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-7.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-8.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-9.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-10.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-11.jpg">
+<meta property="og:updated_time" content="2018-09-22T14:55:28.120Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于核方法和支持向量机">
+<meta name="twitter:description" content="阅读了王东老师《现代机器学习技术导论》第五章关于核函数和支持向量机的介绍后，我总算是系统地学习了核函数相关的知识，知道这是个什么玩意，不会再谈“核”色变了。此外，在打牢了逻辑回归的知识基础后，学习支持向量机也非常轻松。然而在阅读第五章核函数相关的过程中，我也遇到了很多困难，很多数学方面的概念对我来说非常抽象，于是我也求助了博客、知乎，还结合书本内容看了很多遍吴恩达关于核函数的讲解，在这篇读书笔记中">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'F7KZYA9Q0W',
+      apiKey: '3e63e939f0890c781868f085b16ea411',
+      indexName: 'index_Xiutopia',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://AlanXiuxiu.github.io/2018/09/22/Kernel-SVM/"/>
+
+
+
+
+
+  <title>关于核方法和支持向量机 | Xiutopia</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiutopia</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Alan的小站</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://AlanXiuxiu.github.io/2018/09/22/Kernel-SVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alanxiuxiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiutopia">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于核方法和支持向量机</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-22T22:28:18+08:00">
+                2018-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>阅读了王东老师《现代机器学习技术导论》第五章关于核函数和支持向量机的介绍后，我总算是系统地学习了核函数相关的知识，知道这是个什么玩意，不会再谈“核”色变了。此外，在打牢了逻辑回归的知识基础后，学习支持向量机也非常轻松。然而在阅读第五章核函数相关的过程中，我也遇到了很多困难，很多数学方面的概念对我来说非常抽象，于是我也求助了博客、知乎，还结合书本内容看了很多遍吴恩达关于核函数的讲解，在这篇读书笔记中，我把自己的理解过程记录了下来。</p>
+<a id="more"></a>
+<h3 id="Summary-about-Kernel-Method"><a href="#Summary-about-Kernel-Method" class="headerlink" title="Summary about Kernel Method"></a>Summary about Kernel Method</h3><p>线性分类模型的局限性在于，如果数据线性不可分，模型将不再适用，因而需要对数据做非线性映射，在更高的维度中将数据区分开来，使其线性可分。神经网络可以用来学习映射，即特征提取，但是在有些情况下不适用；核函数则是另一种生成映射函数的方法，通过隐式定义数据间的相关性函数来映射。</p>
+<p>核函数描述了训练数据间的关系，使得预测时依赖训练数据而非参数模型。接下来引入了核函数的合法条件Mercer定理，即函数对称且半正定。然后，介绍了一些简单核函数，如线性核（应用于Kernel PCA方法），多项式核（等价于对原始数据进行特征扩展，不仅考虑原始特征还考虑特征之间相关性，多应用于NLP），高斯核（对应无限维特征空间，是距离的函数，形式与RBF一致，故又叫RBF核），概率核等，还可以进行核函数组合。</p>
+<p>讨论了一些简单核函数后，又介绍了复杂核函数。然后讨论了四类具体的核方法：Kernel PCA，Gaussian Process，SVM，RVM。</p>
+<p>KPCA：不符合高斯分布的数据很难用PCA找到一个合适的主成分方向，所以用线性核将数据映射到特征空间，再进行PCA。</p>
+<p>高斯过程：由于不存在显式的模型参数，所以在贝叶斯方法做未知数据概率预测时不能通过参数引入先验概率；但高斯过程引入了数据间距离，通过该距离定义了一个联合概率分布，从而引入了预测模型的随机性，因此可以给出预测过程的可信度。</p>
+<p>支持向量机：分类问题中，希望得到的线性分类面具有最大边界属性，而边界样本集中的训练样本就叫支持向量，而这个分类器就叫SVM。值得注意的是，SVM中只有支持向量才会对分类预测起作用，其余数据都可以丢弃，这样的稀疏模型大大减小了计算量。为什么SVM能做到最大边界呢？具体又是怎么用核函数进行计算更新的呢？多分类怎么办？后面笔记有更详细的内容。</p>
+<p>相关向量机：SVM基于距离，而缺少概率意义。用相关向量代替支持向量，就是RVM的思想。</p>
+<p>对比神经模型和核方法这两种生成映射函数的方法，神经模型是典型的数据驱动模型，包含大量参数，需要足够的数据量以确定这些参数；核方法中可以调节的参数比较少，不需要太多数据，但需要较强的先验知识来设计核函数的形式。</p>
+<h3 id="SVM-Hinge-Loss-Kernel-Method"><a href="#SVM-Hinge-Loss-Kernel-Method" class="headerlink" title="SVM = Hinge Loss + Kernel Method"></a>SVM = Hinge Loss + Kernel Method</h3><p>SVM，support vector machine。即Hinge Loss + Kernel Method。<br>先考虑什么是hinge loss：<br>在二分类问题当中，紫色的那条 loss函数就是hinge loss。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-1.jpg" alt="Loss functions in classification" title="Loss functions in classification"><br>&nbsp;&nbsp;</p>
+<p>Hinge loss 和cross entropy+sigmoid的方法相比，最大的差别在于已经good enough的部分。交叉熵会让好的还要更好，而hinge是及格就好。而linear SVM和logistic regression的最大区别就在于loss函数的选用。如果选用交叉熵，就是logistic regression。对于linear SVM，多个输入的hinge loss以及约束相加得到的是一个凸函数（convex）。Linear svm也可以用gradient descent来训练，也可以用二次规划来求解。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-2.jpg" alt="Duel representation" title="Duel representation"><br>&nbsp;&nbsp;</p>
+<p>看到这里看不下去了….SVM到底是什么呢？又是怎么实现的呢？感觉自己对SVM的理解是碎片化的，跟着做了一些复杂的数学推导，也看了一些形象的讲解，但是不明白为什么要这样推导。</p>
+<p>于是在知乎上找了关于SVM的思维导图，左边是求解基本的SVM问题，右边是相关扩展：</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-3.jpg" alt="SVM summary" title="SVM summary"><br>&nbsp;&nbsp;</p>
+<p>然后转而去看吴恩达的课，反复看了三遍，最后一遍的时候才看懂，感觉知识突然串成一片了：</p>
+<p>在SVM中，损失函数用hinge loss来代替逻辑回归的交叉熵；另外有一点需要注意，SVM不是给出分类的概率，而是当ΘTx大于等于0时，预测y=1；当ΘTx小于0时，预测y=0。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-4.jpg" alt="Hinge loss" title="Hinge loss"><br>&nbsp;&nbsp;</p>
+<p>那么反过来，如果y^=1，我们会希望SVM的ΘTx大于等于1（hinge loss要求不止及格，要做到更好）。如果训练中给损失函数的权重很大（正则项权重较小）的话，最终前面的损失函数项会下降到0，剩下来就变成了怎样使后面的正则项最小的问题。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-5.jpg" alt="SVM decision boundary" title="SVM decision boundary"><br>&nbsp;&nbsp;</p>
+<p>然后有数学推导可以推导出在这种情况（已经完成分类任务，即loss项为0）下，SVM会主动使倾斜的线满足margin最大的要求。当然，如果损失函数与正则项的权重做调整，可以避免过拟合。</p>
+<p>接下来需要理解kernels核函数。如何找到一个合适的decision boundary呢？之前我们一致通过构造ΘTx（多项式特征变量）来找决策边界。参数ΘT的值是通过训练得到的，不需要我们操心，我们要做的就是多写几个x。这里的每一项x，可以是x1，也可以是(x2)^2，也可以是x1x2。现在我们不直接使用多项式来作为特征变量，这样计算量太大了，我们转而用核函数方法来计算新的features，用f来表示每一项x，这里的f就是相似度函数（特殊的，在我们的例子中用到的是高斯核函数），我们可以直观地计算出他们的值，继而直接给出分类结果，画出决策边界。</p>
+<p>以高斯核函数为例子，Gaussian Kernel：</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-6.jpg" alt="Kernels and similarity" title="Kernels and similarity"><br>&nbsp;&nbsp;</p>
+<p>为什么叫相似度函数呢？看下面这张图可以看出来，x离l越近，f值越接近1；x离l越远，f值越接近0.另外分母项可以约束值下降的速度。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-7.jpg" alt="Gaussian kernel" title="Kernels and similarity"><br>&nbsp;&nbsp;</p>
+<p>然后我们弄懂了高斯核函数是什么，接下来需要弄明白高斯核函数代入损失函数之后，是怎么完成分类任务的。我们假设一个例子如下图，已经训练更新后得到了一组参数ΘT，再根据各个x的位置算出f的值。这样画出来的decision boundary就会是这样一个圈圈。可以看出来效果相当不错。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-8.jpg" alt="Prediction task example" title="Prediction task example"><br>&nbsp;&nbsp;</p>
+<p>那么我们是怎么选取landmarks的呢？将landmarks选取在每一个训练样本点的位置即可，这样对m个训练样本我们就可以取m个标记点作为landmarks。这样一来，我们就用新的特征向量f(i)替换了原来的x(i)。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-9.jpg" alt="How to choose landmarks" title="How to choose landmarks"><br>&nbsp;&nbsp;</p>
+<p>完成了替换之后，我们就得到了新的loss函数，然后训练使其最小即可。另外关于最后一项正则向，有一种新的写法就是把平方换成ΘTΘ，根据核函数选取的不同还可能在中间乘一个矩阵M变成ΘTMΘ，可以解决样本数量过大时计算效率不足的问题。</p>
+<p>还有一个问题是，为什么不把核函数和标记点的方法应用到逻辑回归上呢？其实是可以的，但是支持向量机的一些计算技巧并不能很好地移植到逻辑回归等其他算法上，计算效率也会降低。种种原因使得SVM和核函数最为适配。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-10.jpg" alt="Training" title="Training"><br>&nbsp;&nbsp;</p>
+<p>在基本搞明白SVM和核函数之后，会面临一些更具体的问题，比如如何权衡参数C呢？C选取较大意味着忽略正则，也就是低bias和高variance；而C选取较小意味着强调正则，即高bias和低variance。其他的参数的影响可以在下面看到。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/kernel-11.jpg" alt="Effection of parameters" title="Effection of parameters"><br>&nbsp;&nbsp;</p>
+<p>具体在使用SVM时，一般用SVM software package如liblinear，libsvm等等来求解参数Θ。需要明确参数C以及核函数（相似度函数）的选择。如果用linear kernel，其实就是no kernel，当ΘTx大于等于0时预测y=1，这种情况适用于数据量很少，但是数据维度可能很大的情况，此时用线性核函数可以防止过拟合，当然这种情况也可以用逻辑回归；如果选用高斯核函数（Gaussian kernel），还需要选择分母项sigma^2，对于数据量比较大但是维度比较小（比如二维），会想要找一个非线性决策边界去分开数据，就可以用高斯核函数。目前高斯核函数和线性核函数是最为常用的两个。如果维度比较小，数据量巨多（比如50000+），高斯核SVM可能会有点慢，此时考虑多找一些特征，扩大维度然后再用线性核函数或者逻辑回归来分类。</p>
+<p>此外，注意数据要做normalization归一化，不然的话计算相似度时x-l的长度平方就容易被某一维度的距离平方所左右。还有就是不是所有的相似度函数都可以做核函数，需要满足默塞尔定理Mercer’s Theorem，这样SVM才能做有效的optimization而不会不收敛。其他满足的函数还包括多项式核函数polynomial kernel、string kernel、chi-square kernel等。</p>
+<p>Multi-class classification的情况下，采取one vs the rest的方式，可以训练k个SVM，各自将一类与其他类分开来，再pick class i with largest Θ(i)Tx。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/SVM/" rel="tag"># SVM</a>
+          
+            <a href="/tags/Kernel-Method/" rel="tag"># Kernel Method</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/19/Transfer-learning/" rel="next" title="迁移学习笔记">
+                <i class="fa fa-chevron-left"></i> 迁移学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Alanxiuxiu" />
+            
+              <p class="site-author-name" itemprop="name">Alanxiuxiu</p>
+              <p class="site-description motion-element" itemprop="description">Welcome to Xiutopia</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/AlanXiuxiu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xiuqi6666@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Summary-about-Kernel-Method"><span class="nav-number">1.</span> <span class="nav-text">Summary about Kernel Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SVM-Hinge-Loss-Kernel-Method"><span class="nav-number">2.</span> <span class="nav-text">SVM = Hinge Loss + Kernel Method</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alanxiuxiu</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">Hosted by <a target="_blank" href="https://github.com/AlanXiuxiu/AlanXiuxiu.github.io">GitHub Pages</a></div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

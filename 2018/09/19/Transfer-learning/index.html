@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/apple-touch-icon.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning,Transfer Learning,Zero-shot Learning," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="为了学习Zero-shot Learning方面的知识，先对迁移学习做了一个基本了解。迁移学习是指data和所要做的任务不直接相关。比如给的数据是猫狗的照片和label，迁移学习有两种情况：第一，similar domain, different tasks，给的大象和老虎的照片（风格和猫狗照片类似），任务是分类大象和老虎；第二，different domains, same task，给的是高飞">
+<meta name="keywords" content="Deep Learning,Transfer Learning,Zero-shot Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="迁移学习笔记">
+<meta property="og:url" content="http://AlanXiuxiu.github.io/2018/09/19/Transfer-learning/index.html">
+<meta property="og:site_name" content="Xiutopia">
+<meta property="og:description" content="为了学习Zero-shot Learning方面的知识，先对迁移学习做了一个基本了解。迁移学习是指data和所要做的任务不直接相关。比如给的数据是猫狗的照片和label，迁移学习有两种情况：第一，similar domain, different tasks，给的大象和老虎的照片（风格和猫狗照片类似），任务是分类大象和老虎；第二，different domains, same task，给的是高飞">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-1.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-2.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-3.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-4.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-5.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-6.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-7.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-8.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-9.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-10.jpg">
+<meta property="og:updated_time" content="2018-09-19T04:15:17.956Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="迁移学习笔记">
+<meta name="twitter:description" content="为了学习Zero-shot Learning方面的知识，先对迁移学习做了一个基本了解。迁移学习是指data和所要做的任务不直接相关。比如给的数据是猫狗的照片和label，迁移学习有两种情况：第一，similar domain, different tasks，给的大象和老虎的照片（风格和猫狗照片类似），任务是分类大象和老虎；第二，different domains, same task，给的是高飞">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'F7KZYA9Q0W',
+      apiKey: '3e63e939f0890c781868f085b16ea411',
+      indexName: 'index_Xiutopia',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://AlanXiuxiu.github.io/2018/09/19/Transfer-learning/"/>
+
+
+
+
+
+  <title>迁移学习笔记 | Xiutopia</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiutopia</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Alan的小站</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://AlanXiuxiu.github.io/2018/09/19/Transfer-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alanxiuxiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiutopia">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">迁移学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-19T11:35:10+08:00">
+                2018-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>为了学习Zero-shot Learning方面的知识，先对迁移学习做了一个基本了解。迁移学习是指data和所要做的任务不直接相关。比如给的数据是猫狗的照片和label，迁移学习有两种情况：第一，similar domain, different tasks，给的大象和老虎的照片（风格和猫狗照片类似），任务是分类大象和老虎；第二，different domains, same task，给的是高飞狗和招财猫的图片，任务要求分类猫狗。迁移学习和半监督、非监督学习的差别还是蛮大的，主要是因为迁移学习的测试集和训练集相差很远。</p>
+<a id="more"></a>
+<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>迁移学习有不同分类，主要看source data和target data有没有标签：</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-1.jpg" alt="Overview" title="Overview"><br>&nbsp;&nbsp;</p>
+<h3 id="Model-Fine-tuning"><a href="#Model-Fine-tuning" class="headerlink" title="Model Fine-tuning"></a>Model Fine-tuning</h3><p>既有target data又有source data，都有label，但是target data非常少。One-shot learning就是指only a few examples in target domain的情况。例子：（监督学习）说话人辨识中，说话人的语音材料可能很少，但是其他人的语音材料可以成批获得。用source data来训练一个模型，再用target data来fine-tune这个模型。（fine-tune就是说把source data的模型当成初始模型，再用target data继续训练下去）但是要注意到target data太少了，要小心过拟合。</p>
+<p>这里fine-tuning可以用Conservative training的方法，即加一个constraint，让用target data新训练的模型和原来的模型不要差太多（新旧模型在看到同一笔输入的时候，输出相差不要太大，或者新旧模型的参数的l2范式相差不要太大）。</p>
+<p>也可以用Layer transfer的方法，即copy原模型中的几个layer到新模型中去，只训练剩下的几个没有copy的layer，这样就可以防止改动过大（过拟合）。最后如果数据量充足的话，也可以再用target data来fine-tune整个新模型。</p>
+<p>关于layer transfer，有几个问题：<br>有哪些模型可以被transfer（copy）呢？在语音辨识时，通常copy最后几层，因为前几层主要是来提取各个说话人的发音方式，后面几层是得到发音方式后得到说话内容，后几层是普适的；而在图像辨识时，通常copy前几层，因为cnn的前几层都是为了提取最简单的特征，可以普适，而后面提取的特征更特殊。</p>
+<h3 id="Muti-task-Learning"><a href="#Muti-task-Learning" class="headerlink" title="Muti-task Learning"></a>Muti-task Learning</h3><p>不像fine tuning只关注target domain，muti-task learning会关注两个domain。比如神经网络中两个任务共用前面几层，或者是共用中间几层。应用在多语言辨识上，前几层将声音特征做提取，可以共用网络，后面几层再分语种。</p>
+<p>如果两个任务不相关的话，很容易影响迁移学习的效率。所以提出了progressive neural network的方法。先以task1为目的训练一个模型，在做下一个task的时候，每一层的参数会参考到之前的所有模型的上一层。这是一个idea，有待发掘。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-2.jpg" alt="Progressive Neural Network" title="Progressive Neural Network"><br>&nbsp;&nbsp;</p>
+<h3 id="Domain-adversarial-Training"><a href="#Domain-adversarial-Training" class="headerlink" title="Domain-adversarial Training"></a>Domain-adversarial Training</h3><p>对应source有label但是target没有label的情况。可以理解为Training data和testing data非常mismatch。希望神经网络在前几层做完特征提取之后，target和source的domain不要区分的太明显，即把domain的特性取消掉。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-3.jpg" alt="让FE学会从target data中提取特征" title="让FE学会从target data中提取特征"><br>&nbsp;&nbsp;</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-4.jpg" alt="Domain-adversarial Training结构" title="Domain-adversarial Training结构"><br>&nbsp;&nbsp;</p>
+<p>Domain classifier要做的就是识别提取出来的特征是source还是target，而训练时特征提取层会尽量从target data中提取出类似于source data的特征来“骗过”（满足）domain classifier。同时要欺骗也很简单，所以为了又向source特征看齐、又保证提取的完整完备，在后面又接了一个label predictor，给提取出来的特征做分类。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-5.jpg" alt="Domain-adversarial Training训练过程" title="Domain-adversarial Training训练过程"><br>&nbsp;&nbsp;</p>
+<h3 id="Zero-shot-Learning"><a href="#Zero-shot-Learning" class="headerlink" title="Zero-shot Learning"></a>Zero-shot Learning</h3><p>也是source data有标签但是target data没有标签，但是对task的定义更严格，要求source和target做的是different tasks。在语音辨识中就有这样的例子，source（training）语料中不可能有全部可能出现的词汇，于是我们不去训练一个发音怎么识别成单词，而是训练一个发音怎么识别成一个音标，建一个文字对应音标的词典，然后从音标映射过去就好了。</p>
+<p>在图像识别中，我们用attributes来表示每个类，建立一个database来存放每个类的特征情况。训练的时候从图片读取特征情况。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-6.jpg" alt="ZSL数据库存放特征" title="ZSL数据库存放特征"><br>&nbsp;&nbsp;</p>
+<p>那么应用到测试集的时候，只需要读取输入的特征情况，然后去找和数据库中特征情况最接近的那一类即可。于是可以得出ZSL的问题定义：<strong>利用训练集数据训练模型，使得模型能够对测试集的对象进行分类，但是训练集类别和测试集类别之间没有交集；期间需要借助类别的描述，来建立训练集和测试集之间的联系，从而使得模型有效。</strong></p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-7.jpg" alt="Attributes embedding" title="Attributes embedding"><br>&nbsp;&nbsp;</p>
+<p>图像和attributes都可以描述成vector（通过embedding）。把图像x和特征y都做降维，通过embedding function f和g把这些向量都降到同样的dimension。训练时的目标是让同一个物体的x和y做了embedding后尽量接近。</p>
+<p>如果没有database怎么办呢？可以借用word embedding，把attributes映射后的向量变成word vector：</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-8.jpg" alt="Attributes embedding + Word embedding" title="Attributes embedding + Word embedding"><br>&nbsp;&nbsp;</p>
+<p>Loss function的设计也有讲究，不仅要让同种的f和g接近，还要让不同种的向量彼此远离。即在种外找一个最接近的，然后保证即使是这个最近的做内积，也还要比种内做内积的小一个k。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-9.jpg" alt="损失函数设计" title="损失函数设计"><br>&nbsp;&nbsp;</p>
+<p>关于zero-shot learning，还有一个<strong>Convex Combination of Semantic Embedding</strong>的方法。这个方法只需要off-the-shelf NN for ImageNet and word vector。比如输入一个狮虎兽，输出显示0.5概率是狮子，0.5概率是老虎，那么在词向量上取狮子和老虎的向量的中点，然后找离这个中点最接近的vector，发现是狮虎兽。</p>
+<p>再举一个语音识别的zero-shot learning例子。机器翻译时，学会将不同语言的句子先翻译成语义（对应vector），而不是直接从语言到语言，这样没有训练过的语言对也可以进行翻译了。</p>
+<p>ZSL的相关论文：</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/transfer-10.jpg" alt="ZSL论文" title="ZSL论文"><br>&nbsp;&nbsp;</p>
+<h3 id="Self-taught-Learning"><a href="#Self-taught-Learning" class="headerlink" title="Self-taught Learning"></a>Self-taught Learning</h3><p>有大量的没有标签的source data，可以用这些数据去训练一个好的特征提取器，然后再用这个feature extractor去从target data中提取特征。略。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+            <a href="/tags/Transfer-Learning/" rel="tag"># Transfer Learning</a>
+          
+            <a href="/tags/Zero-shot-Learning/" rel="tag"># Zero-shot Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/04/From-classification-to-deep-network/" rel="next" title="从分类问题到深度神经网络">
+                <i class="fa fa-chevron-left"></i> 从分类问题到深度神经网络
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/22/Kernel-SVM/" rel="prev" title="关于核方法和支持向量机">
+                关于核方法和支持向量机 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Alanxiuxiu" />
+            
+              <p class="site-author-name" itemprop="name">Alanxiuxiu</p>
+              <p class="site-description motion-element" itemprop="description">Welcome to Xiutopia</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/AlanXiuxiu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xiuqi6666@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Model-Fine-tuning"><span class="nav-number">2.</span> <span class="nav-text">Model Fine-tuning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Muti-task-Learning"><span class="nav-number">3.</span> <span class="nav-text">Muti-task Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Domain-adversarial-Training"><span class="nav-number">4.</span> <span class="nav-text">Domain-adversarial Training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Zero-shot-Learning"><span class="nav-number">5.</span> <span class="nav-text">Zero-shot Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Self-taught-Learning"><span class="nav-number">6.</span> <span class="nav-text">Self-taught Learning</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alanxiuxiu</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">Hosted by <a target="_blank" href="https://github.com/AlanXiuxiu/AlanXiuxiu.github.io">GitHub Pages</a></div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

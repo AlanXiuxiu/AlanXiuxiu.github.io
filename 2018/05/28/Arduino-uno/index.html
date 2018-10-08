@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/apple-touch-icon.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Nintendo Switch,Arduino," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在Switch上玩异度之刃2，给异刃喂食加羁绊度的过程实在是太痛苦了，需要不停地按A键，费时间还伤手柄。给买不起连发手柄的你推荐DIY单片机模拟连发，希望入手异度之刃2的同学能自己动手丰衣足食，早日把异刃都升级到SS信赖度。">
+<meta name="keywords" content="Nintendo Switch,Arduino">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Switch上使用Arduino Uno R3开发板模拟手柄按键连发">
+<meta property="og:url" content="http://AlanXiuxiu.github.io/2018/05/28/Arduino-uno/index.html">
+<meta property="og:site_name" content="Xiutopia">
+<meta property="og:description" content="在Switch上玩异度之刃2，给异刃喂食加羁绊度的过程实在是太痛苦了，需要不停地按A键，费时间还伤手柄。给买不起连发手柄的你推荐DIY单片机模拟连发，希望入手异度之刃2的同学能自己动手丰衣足食，早日把异刃都升级到SS信赖度。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-1.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-2.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-5.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-6.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-7.jpg">
+<meta property="og:updated_time" content="2018-05-28T15:45:35.255Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在Switch上使用Arduino Uno R3开发板模拟手柄按键连发">
+<meta name="twitter:description" content="在Switch上玩异度之刃2，给异刃喂食加羁绊度的过程实在是太痛苦了，需要不停地按A键，费时间还伤手柄。给买不起连发手柄的你推荐DIY单片机模拟连发，希望入手异度之刃2的同学能自己动手丰衣足食，早日把异刃都升级到SS信赖度。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'F7KZYA9Q0W',
+      apiKey: '3e63e939f0890c781868f085b16ea411',
+      indexName: 'index_Xiutopia',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://AlanXiuxiu.github.io/2018/05/28/Arduino-uno/"/>
+
+
+
+
+
+  <title>在Switch上使用Arduino Uno R3开发板模拟手柄按键连发 | Xiutopia</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiutopia</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Alan的小站</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://AlanXiuxiu.github.io/2018/05/28/Arduino-uno/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alanxiuxiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiutopia">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">在Switch上使用Arduino Uno R3开发板模拟手柄按键连发</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-28T22:47:48+08:00">
+                2018-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/游戏/" itemprop="url" rel="index">
+                    <span itemprop="name">游戏</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在Switch上玩异度之刃2，给异刃喂食加羁绊度的过程实在是太痛苦了，需要不停地按A键，费时间还伤手柄。给买不起连发手柄的你推荐DIY单片机模拟连发，希望入手异度之刃2的同学能自己动手丰衣足食，早日把异刃都升级到SS信赖度。</p>
+<a id="more"></a>
+<h3 id="硬件准备"><a href="#硬件准备" class="headerlink" title="硬件准备"></a>硬件准备</h3><ol>
+<li><code>Arduino Uno R3</code>开发板，以及专用数据线 (淘宝网上购买只需30RMB左右，比市面上的连发手柄便宜太多)</li>
+</ol>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-1.jpg" alt="Arduino Uno R3" title="Arduino Uno R3"><br>&nbsp;&nbsp;</p>
+<p><strong>注意一定要买这种左上角橘色方框里带6个插针的</strong></p>
+<ol start="2">
+<li>一个Type-C转USB的OTG转接线，一头是Type-C插NS底下的充电口上，一头插USB数据线</li>
+</ol>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-2.jpg" alt="Type-C转USB" title="Type-C转USB"><br>&nbsp;&nbsp;</p>
+<h3 id="软件准备"><a href="#软件准备" class="headerlink" title="软件准备"></a>软件准备</h3><ol>
+<li><p>Arduino IDE（用于安装Arduino驱动并测试开发板功能）<br><a href="https://pan.baidu.com/s/18YCaAdPsLcXPllGoKDApeg" target="_blank" rel="noopener">百度云盘链接</a>&nbsp;&nbsp;&nbsp;&nbsp;密码：9r81</p>
+</li>
+<li><p>Flip（用于给Arduino写入A键连发固件）<br><a href="https://pan.baidu.com/s/1wU7m9msLkBBbAfLSlrVQjw" target="_blank" rel="noopener">百度云盘链接</a>&nbsp;&nbsp;&nbsp;&nbsp;密码：tc6l</p>
+</li>
+<li><p>A键连发固件（Joystick.hex 每200ms按一次A键）<br><a href="https://pan.baidu.com/s/1AzNmArNSQ-mAuzLWeNYWgQ" target="_blank" rel="noopener">百度云盘链接</a>&nbsp;&nbsp;&nbsp;&nbsp;密码：0xlp</p>
+</li>
+</ol>
+<h3 id="具体实现步骤"><a href="#具体实现步骤" class="headerlink" title="具体实现步骤"></a>具体实现步骤</h3><h4 id="安装Arduino-IDE及驱动"><a href="#安装Arduino-IDE及驱动" class="headerlink" title="安装Arduino IDE及驱动"></a>安装Arduino IDE及驱动</h4><p>安装<code>Arduino-windows.exe</code>。</p>
+<h4 id="打开刚刚安装的Arduino-IDE，插上Arduino开发板"><a href="#打开刚刚安装的Arduino-IDE，插上Arduino开发板" class="headerlink" title="打开刚刚安装的Arduino IDE，插上Arduino开发板"></a>打开刚刚安装的Arduino IDE，插上Arduino开发板</h4><p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-3.png" alt="IDE界面" title="IDE界面"><br>&nbsp;&nbsp;</p>
+<p>先<code>文件</code>-&gt;<code>示例</code>-&gt;<code>01.Basics</code>-&gt;<code>Fade</code>，弹出新窗口；</p>
+<p>接着在新窗口<code>工具</code>-&gt;<code>开发板</code>-&gt;<code>Arduino/Genuino Uno</code>；</p>
+<p>然后<code>工具</code>-&gt;<code>端口</code>-&gt;<code>COM3</code>。</p>
+<p>最后，按下左上角”√”右边的的<code>-&gt;</code>键，程序就会写入Arduino，开发板上的灯会闪烁。等写入完成后，板子会亮起一个呼吸灯，到这里说明驱动和板子都是正常的，可以进行下一步。</p>
+<h4 id="安装固件写入软件Flip"><a href="#安装固件写入软件Flip" class="headerlink" title="安装固件写入软件Flip"></a>安装固件写入软件Flip</h4><p>安装<code>JRE-Flip-Installer.exe</code>，记住安装位置。安装好之后，把Arduino开发板拔下来重插，然后找一个金属物品，剪刀或者钥匙什么的，用金属物体短接（就是短暂接通）下图所示板子上离USB接口最近的两个插针。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-4.png" alt="短接插针" title="短接插针"><br>&nbsp;&nbsp;</p>
+<p>如果接通成功，板子灯会闪，电脑也会有设备拔出和重新插入的提示音，这时候<code>Arduino</code>即进入DFU模式，可以写固件了。</p>
+<p>这时候，在<code>我的电脑</code>右击，点击<code>管理</code>-&gt;<code>设备管理器</code>，应该会发现一个打着感叹号的未知设备，在这个设备上右击，点击<code>更新驱动程序</code>，选择<code>浏览计算机以查找驱动程序软件</code>，然后选择刚才安装<code>Flip</code>的文件夹<code>\Flip 3.4.7\usb</code>并勾选上<code>包括子文件夹</code>，点击<code>下一步</code>，如果没问题的话就OK了。</p>
+<h4 id="给Arduino写入固件"><a href="#给Arduino写入固件" class="headerlink" title="给Arduino写入固件"></a>给Arduino写入固件</h4><p>先把板子拔下来重插，然后再次短接那两个插针，这时候电脑有提示音设备插入，设备管理器也没有未知设备了。打开安装的Flip软件，按照图示选择<code>ATmega16U2</code></p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-5.jpg" alt="Flip操作" title="Flip操作"><br>&nbsp;&nbsp;</p>
+<p>然后，按下<code>Ctrl + U</code>，出现提示框，点击<code>Open</code>后板子会闪，如果没有提示错误，那么就连接成功。</p>
+<p>接下来在弹出的文件浏览器中选择A键连发固件<code>Joystick.hex</code>，注意这个hex文件应该放置在纯英文目录下。</p>
+<p>然后勾选这4项，点击<code>Run</code>，然后会弹出进度条，速度很快几秒钟，那四个选项前的灰点变绿，说明一切OK至此开发板的准备已经完成。</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-6.jpg" alt="勾选左侧选项" title="勾选左侧选项"><br>&nbsp;&nbsp;</p>
+<h4 id="在Switch上进行测试"><a href="#在Switch上进行测试" class="headerlink" title="在Switch上进行测试"></a>在Switch上进行测试</h4><p>在NS系统设置中选择<code>Controllers and Sensors</code>-&gt;<code>Test Input Devices</code>-&gt;<code>Test Controller Buttons</code>，这时候用OTG转接器把Arduino插入NS底部充电口，板子上的灯亮起，过几秒钟，就会看到输入了一串A键，测试成功！</p>
+<p>&nbsp;&nbsp;<br><img src="https://raw.githubusercontent.com/AlanXiuxiu/MarkdownPhotos/master/pics/arduino-7.jpg" alt="测试" title="测试"><br>&nbsp;&nbsp;</p>
+<h3 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h3><p>该项目的开源HID库：<a href="https://github.com/progmem/Switch-Fightstick" target="_blank" rel="noopener">https://github.com/progmem/Switch-Fightstick</a></p>
+<p>工具包中附带的<code>Joystick.hex</code>其实是已经编译好的二进制程序，只有A键连发的功能，每200ms左右按一次A键，足够满足异度2刷信赖度的需求。</p>
+<p>另外，目前尚不清楚使用这个设备是否会带来BAN机、烧机、毁档等一系列副作用，本人是正常使用的。因为从原理上来讲，并没有不妥之处，与第三方手柄的连发功能原理相同，但是也不能保证没有问题，造成的一切后果大家需要自己承担，如何取舍看大家自己的考虑了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Nintendo-Switch/" rel="tag"># Nintendo Switch</a>
+          
+            <a href="/tags/Arduino/" rel="tag"># Arduino</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/24/Flask-learning/" rel="next" title="Flask学习过程中遇到的问题">
+                <i class="fa fa-chevron-left"></i> Flask学习过程中遇到的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/16/Reinforcement-learning-note/" rel="prev" title="台湾大学李宏毅教授强化学习课程笔记">
+                台湾大学李宏毅教授强化学习课程笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Alanxiuxiu" />
+            
+              <p class="site-author-name" itemprop="name">Alanxiuxiu</p>
+              <p class="site-description motion-element" itemprop="description">Welcome to Xiutopia</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/AlanXiuxiu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xiuqi6666@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件准备"><span class="nav-number">1.</span> <span class="nav-text">硬件准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件准备"><span class="nav-number">2.</span> <span class="nav-text">软件准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体实现步骤"><span class="nav-number">3.</span> <span class="nav-text">具体实现步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Arduino-IDE及驱动"><span class="nav-number">3.1.</span> <span class="nav-text">安装Arduino IDE及驱动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打开刚刚安装的Arduino-IDE，插上Arduino开发板"><span class="nav-number">3.2.</span> <span class="nav-text">打开刚刚安装的Arduino IDE，插上Arduino开发板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装固件写入软件Flip"><span class="nav-number">3.3.</span> <span class="nav-text">安装固件写入软件Flip</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#给Arduino写入固件"><span class="nav-number">3.4.</span> <span class="nav-text">给Arduino写入固件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在Switch上进行测试"><span class="nav-number">3.5.</span> <span class="nav-text">在Switch上进行测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#补充说明"><span class="nav-number">4.</span> <span class="nav-text">补充说明</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alanxiuxiu</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">Hosted by <a target="_blank" href="https://github.com/AlanXiuxiu/AlanXiuxiu.github.io">GitHub Pages</a></div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

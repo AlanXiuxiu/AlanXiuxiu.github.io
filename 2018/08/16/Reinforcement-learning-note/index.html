@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/apple-touch-icon.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Reinforcement Learning,Deep Learning," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="近日学习了李宏毅教授（Hung-yi Lee, NTU）的强化学习课程，从Policy Gradient，到Q-learning，再到Actor-Critic算法，感觉脉络非常清晰。总结了一点听课时记录的笔记，以供日后复习理论知识时用。">
+<meta name="keywords" content="Reinforcement Learning,Deep Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="台湾大学李宏毅教授强化学习课程笔记">
+<meta property="og:url" content="http://AlanXiuxiu.github.io/2018/08/16/Reinforcement-learning-note/index.html">
+<meta property="og:site_name" content="Xiutopia">
+<meta property="og:description" content="近日学习了李宏毅教授（Hung-yi Lee, NTU）的强化学习课程，从Policy Gradient，到Q-learning，再到Actor-Critic算法，感觉脉络非常清晰。总结了一点听课时记录的笔记，以供日后复习理论知识时用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-18T03:14:49.202Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="台湾大学李宏毅教授强化学习课程笔记">
+<meta name="twitter:description" content="近日学习了李宏毅教授（Hung-yi Lee, NTU）的强化学习课程，从Policy Gradient，到Q-learning，再到Actor-Critic算法，感觉脉络非常清晰。总结了一点听课时记录的笔记，以供日后复习理论知识时用。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'F7KZYA9Q0W',
+      apiKey: '3e63e939f0890c781868f085b16ea411',
+      indexName: 'index_Xiutopia',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://AlanXiuxiu.github.io/2018/08/16/Reinforcement-learning-note/"/>
+
+
+
+
+
+  <title>台湾大学李宏毅教授强化学习课程笔记 | Xiutopia</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiutopia</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Alan的小站</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://AlanXiuxiu.github.io/2018/08/16/Reinforcement-learning-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alanxiuxiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiutopia">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">台湾大学李宏毅教授强化学习课程笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-16T11:29:24+08:00">
+                2018-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>近日学习了李宏毅教授（Hung-yi Lee, NTU）的强化学习课程，从Policy Gradient，到Q-learning，再到Actor-Critic算法，感觉脉络非常清晰。总结了一点听课时记录的笔记，以供日后复习理论知识时用。</p>
+<a id="more"></a>
+<h3 id="Policy-Gradient"><a href="#Policy-Gradient" class="headerlink" title="Policy Gradient"></a>Policy Gradient</h3><h4 id="Actor-Environment-Reward"><a href="#Actor-Environment-Reward" class="headerlink" title="Actor, Environment, Reward"></a>Actor, Environment, Reward</h4><p>把一次过程中s,a串起来 成为一个trajectory<br>现在要算每一个trajectory τ的几率，从公式可以看出来几率取决于两件事，一个是environment本身的内部规则，是我们没有办法控制的，我们控制的是我们的actor会采取怎样的行为</p>
+<p>除了A、E还有Reward<br>调整Actor内部的参数Θ 使得大R Reward越大越好，是一个random variable，是有随机性的，我们能计算的是他的期望值，方法是穷举所有的trajectory，从p(Θ)这个分布中sample出trajectory τ，计算R(τ)的期望值就是reward</p>
+<h4 id="Update-parameters-using-Policy-Gradient"><a href="#Update-parameters-using-Policy-Gradient" class="headerlink" title="Update parameters using Policy Gradient"></a>Update parameters using Policy Gradient</h4><p>现在要maximize reward用的是策略梯度。R不需要是可微的，分子分母上下同乘pΘ(τ)然后转化成期望，没有办法计算所以用sample的方式。注意到pΘ(τ)是可以算的，里面有两个部分一个来自于环境一个来自于actor本身，来自环境的你去做gradient没有用，因为跟θ没有关系，真正去做gradient的是p(a|s)。在sample到的data中，在St执行at，最后导致整个trajectory的reward是正的，那就要增加在st执行at的几率，反之就减少</p>
+<p>要用这个公式要去搜集数据 data collection，再去update model，<strong>策略梯度中数据只用一次，这就叫on-policy，自己去下棋，自己去学，用策略Πθ去收集数据，当参数θ更新的时候，数据就需要重新收集了。</strong>实际的时候吧actor看成一个分类器，输入是stn，每一个trajectory中的每一个state，输出是action，训练的资料从trajectory中来。一般是minimize 交叉熵，其实就是maximize logp(θ)，乘上一个整场游戏中得到的reward。</p>
+<h4 id="Tip1-Add-a-baseline"><a href="#Tip1-Add-a-baseline" class="headerlink" title="Tip1 Add a baseline"></a>Tip1 Add a baseline</h4><p>有的游戏中不会扣分，R总是正的，训练的时候无论sample到什么action几率都会提升，这样的话没有怎么被sample到的action就会吃亏，所以要在R上减一个baseline，让R有正有负，最简单的做法就是b取R(τ)的期望平均。</p>
+<h4 id="Tip2-Assign-suitable-credit"><a href="#Tip2-Assign-suitable-credit" class="headerlink" title="Tip2 Assign suitable credit"></a>Tip2 Assign suitable credit</h4><p>在同一场游戏 就是同一个trajectory里面，所有的a|s都share一个相同的reward，但是这样显然不好，因为这一场里面会有好的操作也会有不好的操作，所以希望给同一场中不同的action不同的weight。吧R改成从t这个时刻开始到Tn就是这个trajectory结束，所有的r的累计。也就是说截取从他开始到后面的r ，而不是全部的r。再优化一下就是乘一个discount factor，gamma小于1，越往后越小。</p>
+<p>R-b称为Advantage function，其实就是我们如果在st采取at，这个效果比我们采取其他action的效果会好多少，这个A是可以由AC训练出来的</p>
+<h3 id="Proximal-Policy-Optimization-PPO"><a href="#Proximal-Policy-Optimization-PPO" class="headerlink" title="Proximal Policy Optimization(PPO)"></a>Proximal Policy Optimization(PPO)</h3><p>如果有能力从另一个πθ’（另一个actor）中采样，来训练πθ，这样参数π’就被固定了，我们可以重复使用样本数据，实现off-policy。为了off-policy，需要用到重要性采样。</p>
+<h4 id="Importance-Sampling"><a href="#Importance-Sampling" class="headerlink" title="Importance Sampling"></a>Importance Sampling</h4><p>Xi is sampled from p(x)，但是我们只能从q(x)中采样，通过重要性采样可以从q中采样，计算从p采样的期望，从q中采样的每一笔sample都要乘一个权重p(x)/q(x)，来修正。重要性采样的一个问题就是虽然期望是一样的，但是方差不一样，也就是说如果采样数量不够的话很可能期望计算出现很大的偏差。</p>
+<h4 id="PPO-and-TRPO-algorithm"><a href="#PPO-and-TRPO-algorithm" class="headerlink" title="PPO and TRPO algorithm"></a>PPO and TRPO algorithm</h4><p>回到策略梯度的gradient for update，因为是θ π’在和环境互动，所以advantage function也要换成A’。下一步的trick：在假设参数是θ和θ’的时候，出现s的几率是差不多的，可以上下相消。<br>然后从gradient反推出objective function。问题是pθ(at|st)和pθ’(at|st)不能差太多 不然就会在重要性采样中暴露出问题（见上）。怎么做呢？就是PPO要做的事。PPO把要optimize的objective function，减去一个前两者的相差量（用KL散度表示，是behaviour上的差量，不是参数上的距离，而是action分布上的差），这样两个也不能相差太多了。TRPO就是额外给KL散度加了一个约束，但是实际使用的时候不太方便。</p>
+<p>总结PPO算法  可以用θ’去更新很多次θ。另外KL散度也要乘β。设一个标准的kl范围，如果实际kl过大，说明惩罚没有起作用，要增大β。（Adaptive KL penalty）还有一个PPO2，通过函数去约束pθ(at|st)</p>
+<h3 id="Q-learning"><a href="#Q-learning" class="headerlink" title="Q-learning"></a>Q-learning</h3><p>Critic不直接决定动作action，而是对一个actor π，评价这个策略好不好。计算值函数<br>评估Vπ(s)的两个方法（MC、TD）：输入state，输出评估的Vπ</p>
+<h4 id="Monte-Carlo-MC-based-approach"><a href="#Monte-Carlo-MC-based-approach" class="headerlink" title="Monte-Carlo(MC) based approach"></a>Monte-Carlo(MC) based approach</h4><p>蒙特卡洛方法，玩游戏玩到结束很多次，然后输入s输出累计的收益Gain，regression问题【缺点：varience大，游戏具有随机性，Ga是所有的step合起来算的，每次得到的Ga差别很大】</p>
+<h4 id="Temporal-difference-TD-approach"><a href="#Temporal-difference-TD-approach" class="headerlink" title="Temporal-difference(TD) approach"></a>Temporal-difference(TD) approach</h4><p>时间差分方法,不需要玩到结束，只要在某个st使用at得到st+1就行，原理是Vπ(st)=Vπ(st+1)+rt，训练这个差值去接近实验得到的rt可以吧值函数train出来【varience小，因为r只是每步的差，但是问题在于：Vπ估算的不准】</p>
+<h4 id="Q-learning-as-a-Critic"><a href="#Q-learning-as-a-Critic" class="headerlink" title="Q-learning as a Critic"></a>Q-learning as a Critic</h4><p>另外一个Critic：Q-function，输入s，a，得到Qπ(s,a)，state-action value function<br>遇到状态s时强制使用action a，然后再使用策略π玩下去。两种形式，一：输入s,a，输出Qπ(s,a)；二：输入s，输出Qπ(s,a=left), Qπ(s,a=right), Qπ(s,a=fire)…第二种形式只适用于离散的动作空间</p>
+<p>Another way to use critic，Q-learning不仅仅评估一个策略，而是直接可以拿来做rl。有一个策略π，用π去与环境互动收集数据，再用TD或者MC去learn出Qπ(s,a)，得到这个Q函数之后就可以用他去找到一个新的actor π’【贪婪策略】。再重复这个步骤。Π’其实是用Q绘出来的。实际情况下遇到s不一定会采取a。另外，使用神经网络去输出Q值，能够解决state或者action太多，不好在表格中搜索的问题，就是DQN。</p>
+<p>用数学证明可以证明用Q-Learning迭代更新的Vπ’会大于等于原来Vπ。Vπ(s)是指从状态s开始采取策略π继续玩下去的收益，而Qπ(s,a)是要求状态s时必须采取动作a，然后再采取策略π继续玩下去的收益。每次更新，都是将这个动作a通过贪婪搜索优化为目前来看最优的动作。</p>
+<p><strong>Target network：</strong><br>在learn q-function的时候也会用到TD的方法。会遇到这样的问题：Qπ(st,at)和rt+Qπ(st+1,π(st+1))都在变化，这样不好训练，那么选择固定后者（输入st+1和π(st+1)，输出Qπ(St+1,π(st+1))的Q值网络）的参数成为Target network，这样输出的新Q值也被固定为fixed value。训练中，只更新输入st,at的Q值网络参数，这样就变成了一个传统的target不变的regression问题。当这个可变的Q值网络被更新N次之后，再用他去替换更新target network</p>
+<p><strong>Exploration：</strong><br>在policy gradient中，输出的是action的分布，根据分布去随机采取action。<br>而在Q-learning中有两种方法去探索：<br>第一，Epsilon Greedy, epsilon would decay during learning<br>第二，Boltzmann Exploration, 根据Q-value定义一个分布（类似于策略梯度），然后根据动作分布去选取动作</p>
+<p><strong>Replay Buffer：</strong><br>experience来自不同的策略，在learn QValue的过程中，从经验池中随机抽样选取数据，然后用这些数据去更新Q值（off-policy，需要重要性采样）。好处在experience可以减少去和环境互动的次数，减少训练时间；而且batch里面的数据相关性越小越好，如果运用来自不同policy的experience会降低相关性。</p>
+<h3 id="Advanced-Tips-for-Q-learning"><a href="#Advanced-Tips-for-Q-learning" class="headerlink" title="Advanced Tips for Q-learning"></a>Advanced Tips for Q-learning</h3><h4 id="Double-DQN（DDQN）"><a href="#Double-DQN（DDQN）" class="headerlink" title="Double DQN（DDQN）"></a>Double DQN（DDQN）</h4><p>Q value往往被过估计（因为Q表target network选取动作时用贪婪搜索，总是选大的那个），用double DQN可以更接近真正的q value。Double DQN用两个Q function，用其中一个Q来贪婪搜索动作，然后再把这个动作代入另一个Q’去算Q值。一个负责提案举荐，一个负责计算那个值。</p>
+<p>【如果第一个Q over estimate了a，使得他被选中了；在Q’中，他将被赋予正常的值<br>如果后面那个Q’ over estimate了怎么办呢？这个动作是不会被Q选中的】</p>
+<p>那么哪里来的Q’呢？正好就用target network来算value。这样用可变的网络选动作，用fixed target network来计算Q。</p>
+<h4 id="Dueling-DQN"><a href="#Dueling-DQN" class="headerlink" title="Dueling DQN"></a>Dueling DQN</h4><p>改了network的架构，原本输入s输出Q(s,a)，现在输出分两个path，标量V(s)和向量A(s,a)，再相加（A的每一维都加V），这样对于某个state，不需要sample到所有的action，只要通过sample到的个别action，更新一下V通道的值就可以改变这个state所有的Q了。对A做一个限制，通过normalization让每个A的每个state的sum of column为零，再让V的值为对应Q表中每个column的平均值，这样就强迫网络去更新V</p>
+<h4 id="Prioritized-Reply"><a href="#Prioritized-Reply" class="headerlink" title="Prioritized Reply"></a>Prioritized Reply</h4><p>优先回放，从experience buffer中提取数据时，不再平均随机提取，而是更多几率地找TD error更大的data（这些data的TD大，说明训练的不够好，需要多多训练），另外training process也会做一些改进。</p>
+<h4 id="Multi-step：strike-a-balance-between-MC-and-TD"><a href="#Multi-step：strike-a-balance-between-MC-and-TD" class="headerlink" title="Multi-step：strike a balance between MC and TD"></a>Multi-step：strike a balance between MC and TD</h4><p>每次往经验池中存数据的时候，不存单个(s,a,r,s’)而是存N组连续的，然后在TD训练Q值时target network输入St+N+1和at+N+1。这样就在r的variance（MC缺点）和不精确的Q（TD缺点）之间取得平衡</p>
+<h4 id="Noisy-Net"><a href="#Noisy-Net" class="headerlink" title="Noisy Net"></a>Noisy Net</h4><p>不同于Epsilon Greedy（在动作空间上加噪音以实现随机探索），而是在参数上加噪音。每一个episode（和环境互动之前）就在Q表的值上加噪音，再拿去跟环境做互动。在每一个独立的episode中，参数还是不变的。</p>
+<p>对于noise on action（epsilon greedy），对于同样的状态，agent可能会采取不同的策略，属于XJB乱试；而noise on parameters，在同一个episode中，对同样或相似的state会采取一样的策略，这就实现了state-dependent exploration，能够explore in a consistent way,有系统的试</p>
+<h4 id="Distributional-Q-function"><a href="#Distributional-Q-function" class="headerlink" title="Distributional Q-function"></a>Distributional Q-function</h4><p>真正的Qπ(s,a)其实是分布，我们取的是期望值；但是不同的分布可能取得的期望是一样的，这样会有歧义。原始的Q-learning输入s输出Qπ（s,a1）, Qπ（s,a2）,Qπ（s,a3）…每个Qπ都是一组分布的期望平均，那何不直接输出所有的分布呢？最后实际选动作的时候还是选mean最大的action，但是这个分布可以提供更多的信息，用于规避风险等等。</p>
+<h4 id="Rainbow"><a href="#Rainbow" class="headerlink" title="Rainbow"></a>Rainbow</h4><p>这些方法都不冲突，可以全用上</p>
+<h3 id="Q-learning-for-Continuous-Actions"><a href="#Q-learning-for-Continuous-Actions" class="headerlink" title="Q-learning for Continuous Actions"></a>Q-learning for Continuous Actions</h3><p>Q-learning其实是比策略梯度稳定很多，也更好训练的，没有ppo和trpo之前很难用策略梯度去做个什么事情出来。但是Q-learning不太好处理action是连续的情况。<br>Solution1： sample a set of actions，看哪个action能得到最大的Q值，不是很精确<br>Solution2： 用梯度上升gradient ascent来解决optimization problem，运算量很大，吧a当成参数，通过更新a来maximize Q。<br>Solution3： 特别设计Q network的架构，使得Optimization很容易<br>Solution4： Don’t use Q-learning<br>Learning an Actor: Policy-based(policy gradient, PPO,TRPO)<br>Learning a Critic: Value-based(Q-learning)<br>Both: Actor + Critic</p>
+<h3 id="Actor-Critic"><a href="#Actor-Critic" class="headerlink" title="Actor-Critic"></a>Actor-Critic</h3><h4 id="Actor-Critic-1"><a href="#Actor-Critic-1" class="headerlink" title="Actor-Critic"></a>Actor-Critic</h4><p>Actor的前身是Policy Gradients，能够让agent在连续的动作中毫不犹豫的选择合适的动作，但是Q-learning做这件事会瘫痪<br>Critic的前身是Q-learning或者是其他value-based计算方法，这些算法能够进行单步更新，而不像传统的policy gradients是回合更新，这样做学习效率会提高</p>
+<p>从改进后的policy gradient开始看。Advantage function 由于sample 非常不稳定，是因为Gtn（reward从现在到最后的累计）不稳定，能不能直接估测G的期望值，用期望代替sample的值呢？<br>其实Gtn的期望值就是Qπ（Stn,atn）。代入进去就好了。Baseline的取值用Vπ（Stn），V是Q的期望。<br>这样AC算法就出来了，R部分用的公式是Q-V，这里可以看出来他为什么叫优势函数了，值函数V（s）可以理解为在该状态s下所有可能动作所对应的动作值函数乘以采取该动作的概率的和，也就是说V是该状态下所有动作值函数关于动作概率的平均值。而动作值函数Q（s,a）是单个动作所对应的值函数，Q-V就能评价当前动作值函数相对于平均值的大小。所以这里的优势函数指的是动作值函数相比于当前状态的值函数的优势。如果advantage function大于零，说明该动作比平均动作好</p>
+<p>但是传统的actor-critic问题很大，涉及到两个神经网络，而且每次都是在连续状态中更新参数，每次状态更新的前后都存在相关性，导致神经网络只能片面的看待问题，甚至学不到东西。DDPG能解决，在连续动作上更有效的学习。AC+DQN</p>
+<h4 id="Advantage-Actor-Critic（A2C）"><a href="#Advantage-Actor-Critic（A2C）" class="headerlink" title="Advantage Actor-Critic（A2C）"></a>Advantage Actor-Critic（A2C）</h4><p>按理说应该要estimate两个网络，但是可以只estimate V, 然后把Q用r+V取代掉（忽略期望）。缺点在于引入了一个random variable就是r ，不过吧variance比较大的G换成variance稍小一点的r是合理的。（原paper中这样的实验结果也是最好的）<br>总结A2C的步骤：用一个策略π去与环境互动获取数据，用TD或者MC的方法learn得Vπ(s)，然后再用类似策略梯度的方法把actor π更新到π’。<br>Tip1： actor π(s) （输出action分布）和 critic Vπ(s)（输出V值）这两个网络的参数是可以share的，前几个layer共用一组参数<br>Tip2：仍然需要exploration的机制，对actor π(s)网络的输出做一个constraint，要求其entropy大一点，也就是希望不同的action被采用的几率平均一点</p>
+<h4 id="Asynchronous-Advantage-Actor-Critic（A3C）"><a href="#Asynchronous-Advantage-Actor-Critic（A3C）" class="headerlink" title="Asynchronous Advantage Actor-Critic（A3C）"></a>Asynchronous Advantage Actor-Critic（A3C）</h4><p>怎样加快训练的速度呢？一开始有一个global network，开很多的worker，每个worker用一个CPU去跑。先把global network的参数copy给各个worker，然后worker各自去和各自的环境互动sample一些data（为了较小的相关性，比如跑迷宫的话会出生点远一点），然后用数据计算出的gradient去更新总的global network的参数。每个线程每一步生成一个参数的梯度，多个线程的这些梯度累加起来，一定步数后一起更新共享参数。这个思想是map-reduce的思想。</p>
+<h4 id="Pathwise-Derivative-Policy-Gradient"><a href="#Pathwise-Derivative-Policy-Gradient" class="headerlink" title="Pathwise Derivative Policy Gradient"></a>Pathwise Derivative Policy Gradient</h4><p>Critic不只是告诉Actor采取这个策略是好还是不好，而是会告诉他该采取哪个策略。这个PDPG也能解决q-learning不能够很好解决的动作连续问题。由于Action a is a continuous vector，要去解“让Q最大的a”这个optimization problem很难。这里有点类似GAN，Q就是那个discriminator，要用Q去决定action很困难，就用另外一个网络actor作为generator去解这个optimization的问题。<br>网络结构就是原来有一个Qπ(s,a)的网络，输入的a处接上一个单独训练的actor a=π(s)网络。Fix Q值网络参数，用Qπ的gradient去调Actor的参数。<br>算法步骤：先用π去和环境互动获取数据，再用TD或者MClearn得Q值，之后固定Q value，去更新actor π网络，目标是让他输出的a能够在刚才的q值中取得更大的结果。Exploration和replay buffer都可以用到。</p>
+<p><strong>Q-learning和PDPG的区别：</strong></p>
+<ol>
+<li>在采取动作的时候前者根据Q表，后者根据actor π这个网络</li>
+<li>PDPG会多一个Target actor，原理类似qlearning，使得target actor的参数不会一直变化。Target y的计算，Q-learning直接可以a贪婪选到a，PDPG需要用target actor姑且选一个a</li>
+<li>之前只要learn Q，现在还要update π，目的是maximizeQ，跟generator的概念一样</li>
+<li>每过N步更新target actor</li>
+</ol>
+<h3 id="Sparse-Reward"><a href="#Sparse-Reward" class="headerlink" title="Sparse Reward"></a>Sparse Reward</h3><p>很多情况下agent没有办法得到reward，这样训练就会很困难，有下面几个方法：</p>
+<h4 id="Reward-shaping"><a href="#Reward-shaping" class="headerlink" title="Reward shaping"></a>Reward shaping</h4><p>环境有一个固定的reward，但是额外去设计一些reward来引导。</p>
+<p>比如 curiosity reward， ICM=intrinsic curiosity module，输入(st,at,st+1)，输出rti，也加到Reward中。每个icm内置一个网络，输入at,st,输出预测的st+1，然后与实际观测到的st+1做对比，差越大的话rti越高，鼓励agent去冒险。另外还要告诉agent什么是真正重要的，是在st和st+1输入到ICM模组中的时候经过Feature Extractor，把不重要的feature过滤掉。怎么过滤呢？再来一个网络 输入过滤后的st和st+1，输出预测的at，看与真正at的差距，越小越好，说明过滤的越好。</p>
+<p>####Curriculum learning<br>教机器时从简单到难（不止RL，很多也会用到这个方法，比如RNN之类的）。训练的example从简单到复杂。</p>
+<p>Reverse curriculum generation，reverse是反推的意思。先确定一个goal state，在离他比较近的地方sample states，从这些states开始与环境互动，获得reward。之后吧reward太大或者太小的都去掉（难度适中）；之后再远一点，再次取样学习，balabala</p>
+<h4 id="Hierarchical-reinforcement-learning"><a href="#Hierarchical-reinforcement-learning" class="headerlink" title="Hierarchical reinforcement learning"></a>Hierarchical reinforcement learning</h4><p>下层agent如果没有做到上层agent提出的愿景，那上层的agent就要被惩罚；如果一个agent达到了不一样的goal，那就assume原来上层提出的愿景不对，改成现在这个。</p>
+<h3 id="Imitation-Learning"><a href="#Imitation-Learning" class="headerlink" title="Imitation Learning"></a>Imitation Learning</h3><p>用来解决reward未知的情况，又叫Learning by demonstration或apprenticeship learning（学徒学习）。专家来展示怎样解决问题。<br>两个方法：Behavior Cloning 和 Inverse Reinforcement Learning (inverse optimal control)</p>
+<h4 id="Behavior-Cloning"><a href="#Behavior-Cloning" class="headerlink" title="Behavior Cloning"></a>Behavior Cloning</h4><p>属于监督学习。<br>专家expert做什么，机器就做一样的事。用(s,a专家)去训练网络NN，输入s输出a<br>问题在于专家的sample比较有限，需要Dataset aggregation，先用behavior cloning得到策略π，然后用这个策略去和环境互动，让专家对π的observation做label，再用新的data去更新训练模型。</p>
+<p>还有一个问题在于，会学到专家的一些irrelevant的行为，如果机器的学习能力有限，可能只会copy到无关紧要的行为。</p>
+<p>还有一个问题Mismatch，监管学习中，我们期望training data和testing data有相同的分布。但是在behavior cloning中，actor学习到测策略不可能完全复制专家的，只要有一步走得不一样，那接下来的s分布（testing）就会与刚才专家的数据（training）非常不同。</p>
+<p>综上，Behavior cloning不是能很好的解决reward未知的问题。</p>
+<h4 id="Inverse-Reinforcement-Learning（IRL）"><a href="#Inverse-Reinforcement-Learning（IRL）" class="headerlink" title="Inverse Reinforcement Learning（IRL）"></a>Inverse Reinforcement Learning（IRL）</h4><p>与强化学习（由reward function -&gt; rl -&gt; optimal actor）相反<br>是reward function &lt;- rl &lt;- expert。</p>
+<p>专家的数据由许多trajectory表示。找出reward function之后，再用正序rl去找optimal actor。思路：专家玩游戏，得到一组trajectory，actor也用自己的策略去玩游戏，然后得到一组trajectory。再设计自己的reward function去计算两者的回报值的和，设计的要求是专家的reward要比actor的高。现在用这个reward function，以正序rl的方式去训练actor，与环境互动后得到一组新的trajectory，然后再重新设计reward function。最终的结果是actor和专家得到差不多的回报分数，训练就结束了。</p>
+<p><strong>其实，actor就是generator，reward function就是discriminator，GAN就完了！</strong></p>
+<p>Irl的延伸有很多。还可以用人去引导机器做动作、Third Person Imitation Learning（一个机器去观察人做动作，与自己做动作，会有一个人称视角的转换）</p>
+<h4 id="Application-Sentence-Generation-amp-Chat-bot"><a href="#Application-Sentence-Generation-amp-Chat-bot" class="headerlink" title="Application: Sentence Generation &amp; Chat-bot"></a>Application: Sentence Generation &amp; Chat-bot</h4><p>文本生成sentence generation：专家的trajectory是“床前明月光”，那(s,a)策略对就是(“<bos>””床”) (“床””前”) (“床前””明”) 这样</bos></p>
+<p>聊天机器人chat-bot：专家的trajectory是input：how are you ，output：I am fine，那(s,a)策略对就是（“input, <bos>”, “I”） （“input, I”, “am”） （“input, I am”, “fine”）</bos></p>
+<p>Maximum likelihood属于Behavior cloning。还有更好的方法比如SeqGAN，对应的其实就是IRL。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/28/Arduino-uno/" rel="next" title="在Switch上使用Arduino Uno R3开发板模拟手柄按键连发">
+                <i class="fa fa-chevron-left"></i> 在Switch上使用Arduino Uno R3开发板模拟手柄按键连发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/20/Ubuntu-nvidia/" rel="prev" title="Ubuntu16.04安装nvidia驱动+CUDA8.0时遇到的问题">
+                Ubuntu16.04安装nvidia驱动+CUDA8.0时遇到的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Alanxiuxiu" />
+            
+              <p class="site-author-name" itemprop="name">Alanxiuxiu</p>
+              <p class="site-description motion-element" itemprop="description">Welcome to Xiutopia</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/AlanXiuxiu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xiuqi6666@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Gradient"><span class="nav-number">1.</span> <span class="nav-text">Policy Gradient</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Actor-Environment-Reward"><span class="nav-number">1.1.</span> <span class="nav-text">Actor, Environment, Reward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Update-parameters-using-Policy-Gradient"><span class="nav-number">1.2.</span> <span class="nav-text">Update parameters using Policy Gradient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tip1-Add-a-baseline"><span class="nav-number">1.3.</span> <span class="nav-text">Tip1 Add a baseline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tip2-Assign-suitable-credit"><span class="nav-number">1.4.</span> <span class="nav-text">Tip2 Assign suitable credit</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Proximal-Policy-Optimization-PPO"><span class="nav-number">2.</span> <span class="nav-text">Proximal Policy Optimization(PPO)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Importance-Sampling"><span class="nav-number">2.1.</span> <span class="nav-text">Importance Sampling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PPO-and-TRPO-algorithm"><span class="nav-number">2.2.</span> <span class="nav-text">PPO and TRPO algorithm</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-learning"><span class="nav-number">3.</span> <span class="nav-text">Q-learning</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Monte-Carlo-MC-based-approach"><span class="nav-number">3.1.</span> <span class="nav-text">Monte-Carlo(MC) based approach</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Temporal-difference-TD-approach"><span class="nav-number">3.2.</span> <span class="nav-text">Temporal-difference(TD) approach</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Q-learning-as-a-Critic"><span class="nav-number">3.3.</span> <span class="nav-text">Q-learning as a Critic</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Advanced-Tips-for-Q-learning"><span class="nav-number">4.</span> <span class="nav-text">Advanced Tips for Q-learning</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Double-DQN（DDQN）"><span class="nav-number">4.1.</span> <span class="nav-text">Double DQN（DDQN）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dueling-DQN"><span class="nav-number">4.2.</span> <span class="nav-text">Dueling DQN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Prioritized-Reply"><span class="nav-number">4.3.</span> <span class="nav-text">Prioritized Reply</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multi-step：strike-a-balance-between-MC-and-TD"><span class="nav-number">4.4.</span> <span class="nav-text">Multi-step：strike a balance between MC and TD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Noisy-Net"><span class="nav-number">4.5.</span> <span class="nav-text">Noisy Net</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Distributional-Q-function"><span class="nav-number">4.6.</span> <span class="nav-text">Distributional Q-function</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Rainbow"><span class="nav-number">4.7.</span> <span class="nav-text">Rainbow</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-learning-for-Continuous-Actions"><span class="nav-number">5.</span> <span class="nav-text">Q-learning for Continuous Actions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Actor-Critic"><span class="nav-number">6.</span> <span class="nav-text">Actor-Critic</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Actor-Critic-1"><span class="nav-number">6.1.</span> <span class="nav-text">Actor-Critic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Advantage-Actor-Critic（A2C）"><span class="nav-number">6.2.</span> <span class="nav-text">Advantage Actor-Critic（A2C）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Asynchronous-Advantage-Actor-Critic（A3C）"><span class="nav-number">6.3.</span> <span class="nav-text">Asynchronous Advantage Actor-Critic（A3C）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pathwise-Derivative-Policy-Gradient"><span class="nav-number">6.4.</span> <span class="nav-text">Pathwise Derivative Policy Gradient</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sparse-Reward"><span class="nav-number">7.</span> <span class="nav-text">Sparse Reward</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Reward-shaping"><span class="nav-number">7.1.</span> <span class="nav-text">Reward shaping</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hierarchical-reinforcement-learning"><span class="nav-number">7.2.</span> <span class="nav-text">Hierarchical reinforcement learning</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Imitation-Learning"><span class="nav-number">8.</span> <span class="nav-text">Imitation Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Behavior-Cloning"><span class="nav-number">8.1.</span> <span class="nav-text">Behavior Cloning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Inverse-Reinforcement-Learning（IRL）"><span class="nav-number">8.2.</span> <span class="nav-text">Inverse Reinforcement Learning（IRL）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Application-Sentence-Generation-amp-Chat-bot"><span class="nav-number">8.3.</span> <span class="nav-text">Application: Sentence Generation &amp; Chat-bot</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alanxiuxiu</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">Hosted by <a target="_blank" href="https://github.com/AlanXiuxiu/AlanXiuxiu.github.io">GitHub Pages</a></div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
